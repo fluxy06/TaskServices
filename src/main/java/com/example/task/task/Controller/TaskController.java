@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
+@RequestMapping("/tasks")
 @RestController
 public class TaskController {
         private static final Logger log = LoggerFactory.getLogger(TaskController.class);
@@ -27,7 +29,7 @@ public class TaskController {
             this.taskService = taskService;
         }
 
-        @GetMapping("/tasks/{id}")
+        @GetMapping("{id}")
         public Task getTaskById(
             @PathVariable("id") Long id
         ) {
@@ -35,12 +37,12 @@ public class TaskController {
             return taskService.getTaskByID(id);
         }
 
-        @GetMapping("/tasks")
+        @GetMapping()
         public Collection<Task>  getAllTasks() {
             return taskService.getAllTasks();
         }
         
-        @PostMapping("/tasks")
+        @PostMapping()
 public Task createTask(@RequestBody TaskCreateRequest request) {
     return taskService.postCreateTask(
         request.creatorId(),
