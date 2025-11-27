@@ -46,12 +46,12 @@ public class TaskController {
             }
         }
 
-        @GetMapping()
+        @GetMapping("/all")
         public Collection<Task>  getAllTasks() {
             return taskService.getAllTasks();
         }
 
-        @PutMapping("{id}")
+        @PutMapping("/update/{id}")
         public Task updateTask(@PathVariable Long id, @RequestBody Task task) {
             try {
                 return taskService.updateTask(id, task);
@@ -61,8 +61,8 @@ public class TaskController {
         }
         
         
-    @PostMapping
-public ResponseEntity<String> createTask(@RequestBody Task request) {
+    @PostMapping("/create")
+public ResponseEntity<Task> createTask(@RequestBody Task request) {
     try {
         return taskService.postCreateTask(request);
     } catch (IllegalArgumentException e) {
@@ -70,7 +70,7 @@ public ResponseEntity<String> createTask(@RequestBody Task request) {
     }
 }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/delete/{id}")
         public ResponseEntity<String> deleteTask(@PathVariable Long id) {
             try {
                 taskService.deleteTask(id);

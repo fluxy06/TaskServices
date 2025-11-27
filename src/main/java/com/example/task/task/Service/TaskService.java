@@ -28,7 +28,7 @@ public class TaskService {
     private final AtomicLong nextId = new AtomicLong(1);
 
 
-    public ResponseEntity<String> postCreateTask(Task task) {
+    public ResponseEntity<Task> postCreateTask(Task task) {
         try {
             if (task.deadlineDate().isBefore(task.createDateTime())) {
                 throw new IllegalArgumentException(
@@ -52,7 +52,7 @@ public class TaskService {
             );
 
             tasks.put(newTask.id(), newTask);
-            return ResponseEntity.ok("task with id: " + newTask.id() + "  was created");
+            return ResponseEntity.ok(newTask);
             
         } catch(IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
