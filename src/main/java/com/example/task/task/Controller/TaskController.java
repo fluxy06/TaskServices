@@ -1,9 +1,9 @@
 package com.example.task.task.Controller;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.task.task.Domain.Priority;
 import com.example.task.task.Domain.Status;
-import com.example.task.task.Domain.TaskCreateRequest;
 import com.example.task.task.Entity.Task;
 import com.example.task.task.Service.TaskService;
 
@@ -12,6 +12,8 @@ import java.util.Collection;
 import org.slf4j.Logger;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,8 +35,11 @@ public class TaskController {
         public Task getTaskById(
             @PathVariable("id") Long id
         ) {
-            log.info("/get tasks/{id=" + id + "}");
-            return taskService.getTaskByID(id);
+            try {
+                    return taskService.getTaskByID(id);
+            }catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            }
         }
 
         @GetMapping()
@@ -42,18 +47,22 @@ public class TaskController {
             return taskService.getAllTasks();
         }
         
-        @PostMapping()
-public Task createTask(@RequestBody TaskCreateRequest request) {
-    return taskService.postCreateTask(
-        request.creatorId(),
-        request.assignedUserId(),
-        request.status(),
-        LocalDate.now(),
-        LocalDate.now().plusDays(5),
-        request.priority()
-    );
+        
+    @PostMapping
+public Task createTask(@RequestBody Task request) {
+    try {
+        return taskService.postCreateTask(
+            request.creatorId(),
+            request.assignedUserId(),
+            request.status(),
+            request.createDateTime(),
+            request.deadlineDate(),
+            request.priority()
+        );
+    } catch (IllegalArgumentException e) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
 }
 
-        
 
 }
